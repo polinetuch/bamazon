@@ -3,7 +3,7 @@ var inquirer = require("inquirer");
 
 var connection = mysql.createConnection({
   host: "localhost",
-  port: 8889,
+  port: 3306,
   user: "root",
   password: "root",
   database: "bamazon_DB"
@@ -11,4 +11,16 @@ var connection = mysql.createConnection({
 
 connection.connect(function(error) {
   if (error) throw error;
+  console.log("connected " + connection.threadId);
+  //   askCostumer();
 });
+
+// function askCostumer() {
+//   inquirer.createPromptModule([
+//     {
+//       name: "product-ID",
+//       type: "input",
+//       message: "Which product ID would you like to purchase?"
+//     }
+//   ]);
+// }
