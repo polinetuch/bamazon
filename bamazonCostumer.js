@@ -28,6 +28,19 @@ var askCostumer = function() {
           return false;
         }
       }
+    },
+
+    {
+      name: "quantity",
+      type: "input",
+      message: "How many would you like to buy?",
+      validate: function(value) {
+        if (isNaN(value)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
     }
   ]);
 };
