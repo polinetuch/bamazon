@@ -6,21 +6,28 @@ var connection = mysql.createConnection({
   port: 3306,
   user: "root",
   password: "root",
-  database: "bamazon_DB"
+  database: "bamazon"
 });
 
 connection.connect(function(error) {
   if (error) throw error;
-  console.log("connected " + connection.threadId);
-  //   askCostumer();
+  // console.log("connected " + connection.threadId);
+  askCostumer();
 });
 
-// function askCostumer() {
-//   inquirer.createPromptModule([
-//     {
-//       name: "product-ID",
-//       type: "input",
-//       message: "Which product ID would you like to purchase?"
-//     }
-//   ]);
-// }
+var askCostumer = function() {
+  inquirer.prompt([
+    {
+      name: "productID",
+      type: "input",
+      message: "Enter product ID you'd like to purchase: ",
+      validate: function(value) {
+        if (isNaN(value) && value < 11) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  ]);
+};
