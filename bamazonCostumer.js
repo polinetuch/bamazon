@@ -60,9 +60,28 @@ function askCostumer() {
           if (err) throw err;
 
           console.table(response);
-          var currentquantity = response;
-          console.log(currentquantity);
-          console.log(selectedItemId);
+          var currentquantity = response[0].stock_quantity;
+          console.log("Current quantity: " + currentquantity);
+          console.log("Select item ID: " + selectedItemId);
+
+          var remainingQuant = currentquantity - chosenQuantity;
+
+          var price = response[0].price;
+          var totalprice = price * chosenQuantity;
+
+          if (currentquantity > chosenQuantity) {
+            console.log("Remaining Quantity: " + remainingQuant);
+            console.log("Total price: " + totalprice);
+            connection.query(
+              "UPDATE products SET stock_quantity=? WHERE item_id=?",
+              [remainingQuant, selectedItemId],
+              function(err, res) {
+                if (err) throw err;
+
+                console.log("Insufficient Quantity");
+              }
+            );
+          }
         }
       );
     });
