@@ -74,12 +74,17 @@ function proceedOrder(selectedItemId, chosenQuantity) {
             totalprice +
             "\nThank your for your order!"
         );
-        // connection.query(
-        //   "UPDATE products SET stock_quantity=? WHERE item_id=?" +
-        //     remainingQuantity +
-        //     "WHERE item_id=?" +
-        //     selectedItemId
-        // );
+        connection.query(
+          "UPDATE products SET stock_quantity = ? WHERE item_id = ?",
+          [remainingQuantity, selectedItemId]
+        );
+        console.log(
+          "\n--------------Updated Database--------------\n" +
+            "\nRemaining Quantity of the item " +
+            response[0].product_name +
+            " x" +
+            remainingQuantity
+        );
       } else {
         console.log(
           "Sorry there is an insufficient amount to proceed your order."
