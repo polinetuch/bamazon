@@ -12,7 +12,8 @@ var connection = mysql.createConnection({
 
 connection.connect(function(error) {
   if (error) throw error;
-  // console.log("connected " + connection.threadId);
+  console.log("connected");
+  console.log(connection.threadId);
   askCostumer();
 });
 
@@ -52,22 +53,17 @@ function askCostumer() {
       var chosenQuantity = answer.quantity;
       console.log("Your purchase quantity: " + chosenQuantity);
 
-      console.log(answer);
-      proceedOrder(selectedItemId, chosenQuantity);
-    });
-}
+      connection.query(
+        "SELECT * FROM products WHERE ?",
+        [{ item_id: selectedItemId }],
+        function(err, response) {
+          if (err) throw err;
 
-function proceedOrder(userSelectedID, userChosenQuantity) {
-  connection.query(
-    "SELECT * FROM products WHERE id= " + userSelectedID,
-    function(resp, err) {
-      if (err) throw err;
-      if (userChosenQuantity <= resp[0].stock_quantity) {
-        console.log(userChosenQuantity);
-        console.log(resp[0].stock_quantity);
-      } else {
-        console.log("insufficient amount");
-      }
-    }
-  );
+          console.table(response);
+          var currentquantity = response;
+          console.log(currentquantity);
+          console.log(selectedItemId);
+        }
+      );
+    });
 }
