@@ -12,8 +12,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function(error) {
   if (error) throw error;
-  console.log("connected");
-  console.log(connection.threadId);
+  // console.log(connection.threadId);
   askCostumer();
 });
 
@@ -48,41 +47,44 @@ function askCostumer() {
     ])
     .then(function(answer) {
       var selectedItemId = answer.ID;
-      console.log("Your purchase item ID: " + selectedItemId);
+      console.log("Your selected item ID: " + selectedItemId);
 
       var chosenQuantity = answer.quantity;
-      console.log("Your purchase quantity: " + chosenQuantity);
-
-      connection.query(
-        "SELECT * FROM products WHERE ?",
-        [{ item_id: selectedItemId }],
-        function(err, response) {
-          if (err) throw err;
-
-          console.table(response);
-          var currentquantity = response[0].stock_quantity;
-          console.log("Current quantity: " + currentquantity);
-          console.log("Select item ID: " + selectedItemId);
-
-          var remainingQuant = currentquantity - chosenQuantity;
-
-          var price = response[0].price;
-          var totalprice = price * chosenQuantity;
-
-          if (currentquantity > chosenQuantity) {
-            console.log("Remaining Quantity: " + remainingQuant);
-            console.log("Total price: " + totalprice);
-            connection.query(
-              "UPDATE products SET stock_quantity=? WHERE item_id=?",
-              [remainingQuant, selectedItemId],
-              function(err, res) {
-                if (err) throw err;
-
-                console.log("Insufficient Quantity");
-              }
-            );
-          }
-        }
-      );
+      console.log("Your selected quantity: " + chosenQuantity);
+      proceedOrder(selectedItemId, chosenQuantity);
     });
+}
+
+function proceedOrder(selectedItemId, chosenQuantity) {
+  connection.query(
+    "SELECT * FROM products WHERE ?",
+    [{ item_id: selectedItemId }],
+    function(err, response) {
+      if (err) throw err;
+
+      if (chosenQuantity <= response[0].stock_quantity) {
+        var totalprice = response[0].price * chosenQuantity;
+        var remainingQuantity = response[0].stock_quantity - chosenQuantity;
+        console.log(
+          "Here is Your order\n" +
+            chosenQuantity +
+            "x " +
+            response[0].product_name +
+            "\nYour total price is: $" +
+            totalprice +
+            "\nThank your for your order!"
+        );
+        // connection.query(
+        //   "UPDATE products SET stock_quantity=? WHERE item_id=?" +
+        //     remainingQuantity +
+        //     "WHERE item_id=?" +
+        //     selectedItemId
+        // );
+      } else {
+        console.log(
+          "Sorry there is an insufficient amount to proceed your order."
+        );
+      }
+    }
+  );
 }
