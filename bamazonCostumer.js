@@ -16,7 +16,17 @@ connection.connect(function(error) {
   askCostumer();
 });
 
+function displayProductTable() {
+  connection.connect(function(err) {
+    connection.query("SELECT * FROM products", function(err, res) {
+      if (err) throw err;
+      else console.table("\n", res, " \n ");
+    });
+  });
+}
+
 function askCostumer() {
+  displayProductTable();
   inquirer
     .prompt([
       {
