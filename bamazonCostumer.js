@@ -22,7 +22,7 @@ function askCostumer() {
       {
         type: "input",
         name: "ID",
-        message: "Enter product ID you'd like to purchase:\n",
+        message: "Enter product ID you'd like to purchase from 1 to 10:\n",
         validate: function(value) {
           if (!isNaN(value) && value < 11) {
             return true;
@@ -47,10 +47,10 @@ function askCostumer() {
     ])
     .then(function(answer) {
       var selectedItemId = answer.ID;
-      console.log("Your selected item ID: " + selectedItemId);
+      console.log("Your selected item ID: " + selectedItemId + " \n");
 
       var chosenQuantity = answer.quantity;
-      console.log("Your selected quantity: " + chosenQuantity);
+      console.log("\nYour selected quantity: " + chosenQuantity + " \n");
       proceedOrder(selectedItemId, chosenQuantity);
     });
 }
@@ -61,16 +61,17 @@ function proceedOrder(selectedItemId, chosenQuantity) {
     [{ item_id: selectedItemId }],
     function(err, response) {
       if (err) throw err;
+      console.table(response);
 
       if (chosenQuantity <= response[0].stock_quantity) {
         var totalprice = response[0].price * chosenQuantity;
         var remainingQuantity = response[0].stock_quantity - chosenQuantity;
         console.log(
-          "Here is Your order\n" +
+          "\nHere is Your order\n" +
             chosenQuantity +
             "x " +
             response[0].product_name +
-            "\nYour total price is: $" +
+            "Your total price is: $\n" +
             totalprice +
             "\nThank your for your order!"
         );
